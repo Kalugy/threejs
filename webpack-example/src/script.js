@@ -1,13 +1,14 @@
 import './style.css'
 import * as THREE from 'three' 
+import gsap from 'gsap'
 
 //Scene
 const scene = new THREE.Scene()
 
 //Red cube
 const groupCubes = new THREE.Group()
-groupCubes.position.set(0,1,0)
-groupCubes.scale.set(1,2,1)
+//groupCubes.position.set(0,1,0)
+//groupCubes.scale.set(1,2,1)
 scene.add(groupCubes) 
 
 const cube1 = new THREE.Mesh(
@@ -44,10 +45,15 @@ const sizes = {
 }
 
 //Camera
-const camera = new THREE.PerspectiveCamera(75, sizes.width/sizes.width)
-//camera.position.z = 6
-//camera.position.x = 2
-//camera.position.y = 0
+const camera = new THREE.PerspectiveCamera(75, sizes.width/sizes.width,0.1,100)
+/*const aspectRatio = sizes.width /sizes.height
+const camera = new THREE.OrthographicCamera(
+    -1 *aspectRatio,
+     1 *aspectRatio, 
+     1,-1
+     ,0.1
+     ,100)
+*/
 camera.position.set(1,1,6)
 scene.add(camera)
 
@@ -64,6 +70,56 @@ const renderer = new THREE.WebGLRenderer({
 
 renderer.setSize(sizes.width, sizes.height)
 
-renderer.render(scene, camera)
+
+
+//Animations
+
+
+//GSAP
+gsap.to(cube3.position, {duration:1,delay:2,x:2})
+gsap.to(cube2.position, {duration:2,delay:2,y:1})
+gsap.to(cube1.position, {duration:3,delay:2,z:1})
+
+
+const tick = () => {
+    renderer.render(scene, camera)
+    window.requestAnimationFrame(tick)
+}
+tick()
+
+
+//With Javascript Set up the time render independ the computer
+/*
+let time = Date.now();
+const tick = () => {
+    console.log("Tick")
+    const currentTime = Date.now()
+    const deltaTime = currentTime - time
+    time = currentTime
+    console.log(deltaTime)
+    groupCubes.rotation.y += 0.001 * deltaTime
+    renderer.render(scene, camera)
+    window.requestAnimationFrame(tick)
+}
+tick()*/
+
+//animation with Three js clock
+/*
+const clock = new THREE.Clock()
+const tick = () => {
+    const elapsedTime = clock.getElapsedTime()
+    console.log(elapsedTime)
+    //groupCubes.rotation.y = elapsedTime 
+    //groupCubes.position.y = Math.sin(elapsedTime) 
+    //groupCubes.position.x = Math.cos(elapsedTime)
+
+    camera.position.y = Math.sin(elapsedTime) 
+    camera.position.x = Math.cos(elapsedTime)
+    camera.lookAt(groupCubes.position)
+
+    renderer.render(scene, camera)
+    window.requestAnimationFrame(tick)
+}
+tick()*/
 
 
