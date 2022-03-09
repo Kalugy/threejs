@@ -54,11 +54,24 @@ const camera = new THREE.OrthographicCamera(
      ,0.1
      ,100)
 */
-camera.position.set(1,1,6)
+//camera.position.set(1,1,6)
+camera.position.z = 2;
 scene.add(camera)
 
 //camera.lookAt(new THREE.Vector3(3,0,0))
 //camera.lookAt(mesh.position)
+
+//CAMERA WITH CURSOR
+const cursor = {
+    x:0,
+    y:0
+}
+window.addEventListener('mousemove',(event) =>{
+    
+    cursor.x=event.clientX / sizes.width - 0.5
+    cursor.y=-( event.clientY /sizes.height - 0.5)
+    console.log(cursor)
+})
 
 //console.log("test", mesh.position.distanceTo(camera.position))
 
@@ -82,7 +95,11 @@ gsap.to(cube1.position, {duration:3,delay:2,z:1})
 
 
 const tick = () => {
+    camera.position.set(cursor.x,cursor.y,4)
+    
+    camera.lookAt(groupCubes.position)
     renderer.render(scene, camera)
+    //35
     window.requestAnimationFrame(tick)
 }
 tick()
