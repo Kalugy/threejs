@@ -31,8 +31,6 @@ const cube3 = new THREE.Mesh(
 cube3.position.set(-2,0,0)
 groupCubes.add(cube3)
 
-
-
 //mesh.position.normalize();
 //console.log("test", mesh.position.length())
 //AXISHELPER
@@ -41,13 +39,46 @@ scene.add(axisHelper)
 
 //Sizes
 const sizes = {
-    width:600,
-    height: 600
+    width: window.innerWidth,
+    height: window.innerHeight
 }
+window.addEventListener('resize', () =>{
+    
+    console.log("resize")
+    sizes.width = window.innerWidth;
+    sizes.height = window.innerHeight;
+
+    //update camera aspect
+    camera.aspect = sizes.width /sizes.height
+    camera.updateProjectionMatrix()
+    renderer.setSize(sizes.width,sizes.height)
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio,2))
+})
+window.addEventListener('dblclick',()=>{
+    //Safari
+    const fullscreenElement = document.fullscreenElement|| document.webkitFullscreenElement;
+    console.log("here",document.fullscreenElement)
+    if(!fullscreenElement){
+        if(canvas2.requestFullscreen){
+            canvas2.requestFullscreen()
+        }
+        else{
+            canvas2.webkitFullscreenElement()
+        }
+        
+    }else{
+        if(document.exitFullscreen()){
+            document.exitFullscreen()
+        }
+        else{
+            document.webkitExitFullscreen()
+        }
+        
+    }
+})
 
 //Camera
 const camera = new THREE.PerspectiveCamera(75, sizes.width/sizes.width,0.1,100)
-
 /*const aspectRatio = sizes.width /sizes.height
 const camera = new THREE.OrthographicCamera(
     -1 *aspectRatio,
@@ -56,26 +87,19 @@ const camera = new THREE.OrthographicCamera(
      ,0.1
      ,100)
 */
-//camera.position.set(1,1,6)
 camera.position.z = 2;
 scene.add(camera)
-
-//camera.lookAt(new THREE.Vector3(3,0,0))
-//camera.lookAt(mesh.position)
-
-
 
 //CAMERA WITH CURSOR
 const cursor = {
     x:0,
     y:0
 }
-window.addEventListener('mousemove',(event) =>{
-    
+window.addEventListener('mousemove',(event) =>{    
     cursor.x=event.clientX / sizes.width - 0.5
     cursor.y=-( event.clientY /sizes.height - 0.5)
-    console.log(cursor)
 })
+
  
 //console.log("test", mesh.position.distanceTo(camera.position))
 
@@ -87,67 +111,19 @@ const renderer = new THREE.WebGLRenderer({
 
 //Controls
 const controls = new OrbitControls(camera, canvas2)
-//controls.target.y=1
-//controls.update()
 controls.enableDamping = true
 
 renderer.setSize(sizes.width, sizes.height)
-
-
-
+renderer.setPixelRatio(Math.min(window.devicePixelRatio,2))
 //Animations
-
-
 //GSAP
-gsap.to(cube3.position, {duration:1,delay:2,x:2})
-gsap.to(cube2.position, {duration:2,delay:2,y:1})
-gsap.to(cube1.position, {duration:3,delay:2,z:1})
-
+//gsap.to(cube3.position, {duration:1,delay:2,x:2})
+//gsap.to(cube2.position, {duration:2,delay:2,y:1})
+//gsap.to(cube1.position, {duration:3,delay:2,z:1})
 
 const tick = () => {
-    //camera.position.set(cursor.x*10,cursor.y*10,4)
-    //camera.position.set(Math.sin(cursor.x *Math.PI * 2)*3,cursor.y * 5,Math.cos(cursor.x*Math.PI * 2)*3)
     controls.update()
-    //camera.lookAt(groupCubes.position)
     renderer.render(scene, camera)
-    //35
     window.requestAnimationFrame(tick)
 }
 tick()
-
-
-//With Javascript Set up the time render independ the computer
-/*
-let time = Date.now();
-const tick = () => {
-    console.log("Tick")
-    const currentTime = Date.now()
-    const deltaTime = currentTime - time
-    time = currentTime
-    console.log(deltaTime)
-    groupCubes.rotation.y += 0.001 * deltaTime
-    renderer.render(scene, camera)
-    window.requestAnimationFrame(tick)
-}
-tick()*/
-
-//animation with Three js clock
-/*
-const clock = new THREE.Clock()
-const tick = () => {
-    const elapsedTime = clock.getElapsedTime()
-    console.log(elapsedTime)
-    //groupCubes.rotation.y = elapsedTime 
-    //groupCubes.position.y = Math.sin(elapsedTime) 
-    //groupCubes.position.x = Math.cos(elapsedTime)
-
-    camera.position.y = Math.sin(elapsedTime) 
-    camera.position.x = Math.cos(elapsedTime)
-    camera.lookAt(groupCubes.position)
-
-    renderer.render(scene, camera)
-    window.requestAnimationFrame(tick)
-}
-tick()*/
-
-
