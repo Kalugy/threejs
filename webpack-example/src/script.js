@@ -1,5 +1,6 @@
 import './style.css'
 import * as THREE from 'three' 
+import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls'
 import gsap from 'gsap'
 
 //Scene
@@ -46,6 +47,7 @@ const sizes = {
 
 //Camera
 const camera = new THREE.PerspectiveCamera(75, sizes.width/sizes.width,0.1,100)
+
 /*const aspectRatio = sizes.width /sizes.height
 const camera = new THREE.OrthographicCamera(
     -1 *aspectRatio,
@@ -61,6 +63,8 @@ scene.add(camera)
 //camera.lookAt(new THREE.Vector3(3,0,0))
 //camera.lookAt(mesh.position)
 
+
+
 //CAMERA WITH CURSOR
 const cursor = {
     x:0,
@@ -72,7 +76,7 @@ window.addEventListener('mousemove',(event) =>{
     cursor.y=-( event.clientY /sizes.height - 0.5)
     console.log(cursor)
 })
-
+ 
 //console.log("test", mesh.position.distanceTo(camera.position))
 
 //render
@@ -80,6 +84,12 @@ const canvas2 = document.querySelector('.webgl')
 const renderer = new THREE.WebGLRenderer({
     canvas: canvas2
 })
+
+//Controls
+const controls = new OrbitControls(camera, canvas2)
+//controls.target.y=1
+//controls.update()
+controls.enableDamping = true
 
 renderer.setSize(sizes.width, sizes.height)
 
@@ -95,9 +105,10 @@ gsap.to(cube1.position, {duration:3,delay:2,z:1})
 
 
 const tick = () => {
-    camera.position.set(cursor.x,cursor.y,4)
-    
-    camera.lookAt(groupCubes.position)
+    //camera.position.set(cursor.x*10,cursor.y*10,4)
+    //camera.position.set(Math.sin(cursor.x *Math.PI * 2)*3,cursor.y * 5,Math.cos(cursor.x*Math.PI * 2)*3)
+    controls.update()
+    //camera.lookAt(groupCubes.position)
     renderer.render(scene, camera)
     //35
     window.requestAnimationFrame(tick)
