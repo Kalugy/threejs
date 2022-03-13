@@ -2,9 +2,109 @@ import './style.css'
 import * as THREE from 'three' 
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls'
 import gsap from 'gsap'
+import * as dat from 'lil-gui'
+import {imageSource} from './door.jpg'
 
-//Scene
+//*****Debug
+const gui = new dat.GUI({closed: true})
+window.addEventListener('keydown',(event)=>{
+    if(event.key === 'h'){
+        if(gui._hidden)
+            gui.show()
+        else    
+            gui.hide()
+    }
+})
+
+//******Scene
 const scene = new THREE.Scene()
+
+
+/****Textures */
+/* //One Way Javascript
+const image = new Image()
+const texture = new THREE.Texture(image)
+
+
+
+image.onload = () => {
+    texture.needsUpdate = true
+}
+image.src = '/textures/door/color.jpg'
+
+const cubex = new THREE.Mesh(
+    new THREE.BoxGeometry(1,1,1),
+    new THREE.MeshBasicMaterial({map: texture})
+)
+scene.add(cubex)
+*/
+const loadingManager = new THREE.LoadingManager()
+
+loadingManager.onStart = () =>{
+    console.log("Start")
+}
+
+loadingManager.onLoad = () =>{
+    console.log("load")
+}
+loadingManager.onProgress = () =>{
+    console.log("Progress")
+}
+
+loadingManager.onError = () =>{
+    console.log("Error")
+}
+
+const textureLoader = new THREE.TextureLoader(loadingManager)
+const alphaTexture = textureLoader.load('/textures/door/alpha.jpg')
+const ambientTexture = textureLoader.load('/textures/door/ambientOcclusion.jpg')
+const colorTexture = textureLoader.load('/textures/door/color.jpg')
+const heightTexture = textureLoader.load('/textures/door/height.jpg')
+const metalTexture = textureLoader.load('/textures/door/metalness.jpg')
+const normalTexture = textureLoader.load('/textures/door/normal.jpg')
+const roughnessTexture = textureLoader.load('/textures/door/roughness.jpg')
+
+const checkTexture = textureLoader.load('/textures/checkerboard-1024x1024.png')
+const check2Texture = textureLoader.load('/textures/checkerboard-8x8.png')
+
+
+
+/*
+colorTexture.repeat.x = 2
+colorTexture.repeat.y = 3
+colorTexture.wrapS = THREE.MirroredRepeatWrapping
+colorTexture.wrapT = THREE.MirroredRepeatWrapping
+colorTexture.offset.x = 0.5
+colorTexture.rotation = Math.PI / 4
+colorTexture.center.x = 0.5
+colorTexture.center.y = 0.5
+*/
+
+//colorTexture.minFilter = THREE.NearestFilter 
+
+check2Texture.magFilter = THREE.NearestFilter 
+
+
+//Using library THREE js
+/*const textureLoader = new THREE.TextureLoader()
+const texture = textureLoader.load(
+    '/textures/door/color.jpg',
+    ()=>{
+        console.log("load")   
+    },
+    ()=>{
+        console.log("progress")
+    },
+    ()=>{
+        console.log("error")
+    }
+    )
+*/
+const cubex = new THREE.Mesh(
+    new THREE.BoxGeometry(1,1,1),
+    new THREE.MeshBasicMaterial({map: check2Texture})
+)
+scene.add(cubex)
 
 //Red cube
 const groupCubes = new THREE.Group()
@@ -12,9 +112,10 @@ const groupCubes = new THREE.Group()
 //groupCubes.scale.set(1,2,1)
 //scene.add(groupCubes) 
 
+
 const cube1 = new THREE.Mesh(
     new THREE.BoxGeometry(1,1,1),
-    new THREE.MeshBasicMaterial({color: 0xff0000})
+    new THREE.MeshBasicMaterial({color: 0x00ff00})
 )
 groupCubes.add(cube1)
 
@@ -33,7 +134,7 @@ const cube3 = new THREE.Mesh(
 cube3.position.set(-2,0,0)
 groupCubes.add(cube3)
 
-//CREATE OWN TRIANGLES
+//CREATE OWN TRIANGLES USING BUFFER GEOMETRY
 
 const geomtry2 = new THREE.BufferGeometry()
 const vertices = new Float32Array([
@@ -47,6 +148,27 @@ const material2 = new THREE.MeshBasicMaterial({color:0xff0000, wireframe:true})
 const mesh2 = new THREE.Mesh(geomtry2,material2)
 scene.add(mesh2)
 
+//Debug
+gui.add(mesh2.position, 'y', -2, 2,0.01)
+gui.add(mesh2.position, 'x').min(-2)
+                            .max(-2)
+                            .step(0.01)
+                            .name('elevation X')
+gui.add(mesh2.position, 'z', -2, 2,0.01)
+gui.add(mesh2, 'visible')
+gui.add(material2, 'wireframe')
+const colordebug = {
+    color: 0xff00ff,
+    spin: () => {
+        gsap.to(mesh2.rotation, {duration:1,y:mesh2.rotation.y+10})
+    }
+}
+gui.addColor(colordebug, 'color')
+   .onChange(()=>{
+       material2.color.set(colordebug.color)
+
+    })
+gui.add(colordebug,'spin')
 
 
 //amount triangles
@@ -155,23 +277,7 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio,2))
 //gsap.to(cube3.position, {duration:1,delay:2,x:2})
 //gsap.to(cube2.position, {duration:2,delay:2,y:1})
 //gsap.to(cube1.position, {duration:3,delay:2,z:1})
-let counter2=0.1
 const tick = () => {
-    counter2= counter2+.01
-    if(counter2<8){
-        gsap.to(mesh2.rotation, {y:counter2})
-        
-    }
-    else if(counter2>8 && counter2<12){
-        gsap.to(mesh2.rotation, {x:counter2})
-    }
-    else if(counter2>12 && counter2<20){
-        gsap.to(mesh2.rotation, {z:counter2})
-    }
-    else{
-        counter2=0
-    }
-    console.log(counter2)
     controls.update()
     renderer.render(scene, camera)
     window.requestAnimationFrame(tick)
