@@ -4,6 +4,7 @@ import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls'
 import gsap from 'gsap'
 import * as dat from 'lil-gui'
 import {imageSource} from './door.jpg'
+import { Clock, MeshPhongMaterial } from 'three'
 
 //*****Debug
 const gui = new dat.GUI({closed: true})
@@ -18,6 +19,7 @@ window.addEventListener('keydown',(event)=>{
 
 //******Scene
 const scene = new THREE.Scene()
+
 
 
 /****Textures */
@@ -67,6 +69,10 @@ const roughnessTexture = textureLoader.load('/textures/door/roughness.jpg')
 const checkTexture = textureLoader.load('/textures/checkerboard-1024x1024.png')
 const check2Texture = textureLoader.load('/textures/checkerboard-8x8.png')
 
+//material
+const matcapTexture = textureLoader.load('/textures/matcaps/1.png')
+
+const gradientTexture = textureLoader.load('/textures/gradients/3.jpg')
 
 
 /*
@@ -82,7 +88,7 @@ colorTexture.center.y = 0.5
 
 //colorTexture.minFilter = THREE.NearestFilter 
 
-check2Texture.magFilter = THREE.NearestFilter 
+//check2Texture.magFilter = THREE.NearestFilter 
 
 
 //Using library THREE js
@@ -100,11 +106,121 @@ const texture = textureLoader.load(
     }
     )
 */
-const cubex = new THREE.Mesh(
+/*const cubex = new THREE.Mesh(
     new THREE.BoxGeometry(1,1,1),
     new THREE.MeshBasicMaterial({map: check2Texture})
 )
 scene.add(cubex)
+*/
+
+/*******Materials */
+
+//const material1 = new THREE.MeshBasicMaterial()
+//material1.map = colorTexture
+//material1.color.set('#ff0000')
+//material1.color = new THREE.Color('#f00')
+//material1.wireframe = false
+//material1.opacity = 0.5
+//material1.transparent = true
+//material1.alphaMap = alphaTexture
+//material1.side = THREE.DoubleSide
+
+//const material1 = new THREE.MeshNormalMaterial()
+//material1.flatShading = true
+
+//const material1 = new THREE.MeshMatcapMaterial()
+//material1.matcap = matcapTexture
+
+//const material1 = new THREE.MeshDepthMaterial()
+
+//const material1 = new THREE.MeshLambertMaterial()
+//const material1 = new THREE.MeshPhongMaterial()
+//material1.shininess = 100
+//material1 .specular = new THREE.Color(0xff00ff)
+
+//const material1 = new THREE.MeshToonMaterial()
+//material1.gradientMap= gradientTexture
+const material1 =new THREE.MeshStandardMaterial()
+
+/*
+const material1 =new THREE.MeshStandardMaterial()
+//material1.metalness = 0.45
+//material1.roughness = 0.05
+material1.map = colorTexture
+material1.aoMap = ambientTexture
+material1.aoMapIntensity = 1
+material1.displacementMap = heightTexture
+material1.displacementScale = .1
+material1.metalnessMap = metalTexture
+material1.roughnessMap = roughnessTexture
+material1.normalMap = normalTexture
+material1.alphaMap = alphaTexture
+material1.transparent = true
+//material1.normalScale.set(0.5,0.5)
+//DEBUG
+gui.add(material1,'metalness').min(0).max(1).step(0.0001)
+gui.add(material1,'roughness').min(0).max(1).step(0.0001)
+gui.add(material1,'aoMapIntensity').min(0).max(10).step(0.0001)
+gui.add(material1,'displacementScale').min(0).max(1).step(0.0001)
+*/
+
+/**Environment */
+const material2 =new THREE.MeshStandardMaterial()
+material2.metalness = 1
+material2.roughness = 0
+const cubeLoaderEnvironment = new THREE.CubeTextureLoader()
+
+const environment = cubeLoaderEnvironment.load([
+    '/textures/environmentMaps/0/px.jpg',
+    '/textures/environmentMaps/0/nx.jpg',
+    '/textures/environmentMaps/0/py.jpg',
+    '/textures/environmentMaps/0/ny.jpg',
+    '/textures/environmentMaps/0/pz.jpg',
+    '/textures/environmentMaps/0/nz.jpg'
+]) 
+material2.envMap = environment
+//DEBUG
+gui.add(material2,'metalness').min(0).max(1).step(0.0001)
+gui.add(material2,'roughness').min(0).max(1).step(0.0001)
+
+
+//scene.add(environment)
+
+//***Lights
+const ambientLight = new THREE.AmbientLight(0xffffff,0.5)
+scene.add(ambientLight)
+const pointLight = new THREE.PointLight(0xffffff, 0.5)
+pointLight.position.x= 2
+pointLight.position.y= 2
+pointLight.position.z= 2
+scene.add(pointLight)
+
+const sphere = new THREE.Mesh(
+    new THREE.SphereGeometry(0.5,64,64),
+    material2
+)
+sphere.position.x = -1.5
+
+sphere.geometry.setAttribute('uv2', new THREE.BufferAttribute(sphere.geometry.attributes.uv.array,2))
+
+const plane = new THREE.Mesh(
+    new THREE.PlaneGeometry(1,1,100,100),
+    material1
+)
+plane.geometry.setAttribute('uv2', new THREE.BufferAttribute(plane.geometry.attributes.uv.array,2))
+
+const thorus = new THREE.Mesh(
+    new THREE.TorusGeometry(0.3,0.2,64,128),
+    material1
+)
+thorus.position.x=1.5
+
+thorus.geometry.setAttribute('uv2', new THREE.BufferAttribute(thorus.geometry.attributes.uv.array,2))
+
+scene.add(sphere,plane, thorus)
+
+
+
 
 //Red cube
 const groupCubes = new THREE.Group()
@@ -135,7 +251,7 @@ cube3.position.set(-2,0,0)
 groupCubes.add(cube3)
 
 //CREATE OWN TRIANGLES USING BUFFER GEOMETRY
-
+/*
 const geomtry2 = new THREE.BufferGeometry()
 const vertices = new Float32Array([
     0,0,0,
@@ -169,7 +285,7 @@ gui.addColor(colordebug, 'color')
 
     })
 gui.add(colordebug,'spin')
-
+*/
 
 //amount triangles
 /*
@@ -197,9 +313,7 @@ const sizes = {
     width: window.innerWidth,
     height: window.innerHeight
 }
-window.addEventListener('resize', () =>{
-    
-    console.log("resize")
+window.addEventListener('resize', () =>{    
     sizes.width = window.innerWidth;
     sizes.height = window.innerHeight;
 
@@ -251,8 +365,6 @@ const cursor = {
     y:0
 }
 window.addEventListener('mousemove',(event) =>{    
-
-    
     cursor.x=event.clientX / sizes.width - 0.5
     cursor.y=-( event.clientY /sizes.height - 0.5)
 })
@@ -277,8 +389,21 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio,2))
 //gsap.to(cube3.position, {duration:1,delay:2,x:2})
 //gsap.to(cube2.position, {duration:2,delay:2,y:1})
 //gsap.to(cube1.position, {duration:3,delay:2,z:1})
+
+const clock = new THREE.Clock()
 const tick = () => {
     controls.update()
+
+    //update objects materials
+    const elapseTime = clock.getElapsedTime()
+    sphere.rotation.y = 0.1 * elapseTime 
+    plane.rotation.y = 0.1 * elapseTime
+    thorus.rotation.y = 0.1 * elapseTime
+    sphere.rotation.x = 0.15 * elapseTime 
+    plane.rotation.x = 0.15 * elapseTime
+    thorus.rotation.x = 0.15 * elapseTime
+
+
     renderer.render(scene, camera)
     window.requestAnimationFrame(tick)
 }
