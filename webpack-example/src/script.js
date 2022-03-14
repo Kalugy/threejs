@@ -140,9 +140,8 @@ scene.add(cubex)
 
 //const material1 = new THREE.MeshToonMaterial()
 //material1.gradientMap= gradientTexture
-const material1 =new THREE.MeshStandardMaterial()
 
-/*
+
 const material1 =new THREE.MeshStandardMaterial()
 //material1.metalness = 0.45
 //material1.roughness = 0.05
@@ -162,7 +161,7 @@ gui.add(material1,'metalness').min(0).max(1).step(0.0001)
 gui.add(material1,'roughness').min(0).max(1).step(0.0001)
 gui.add(material1,'aoMapIntensity').min(0).max(10).step(0.0001)
 gui.add(material1,'displacementScale').min(0).max(1).step(0.0001)
-*/
+
 
 /**Environment */
 const material2 =new THREE.MeshStandardMaterial()
