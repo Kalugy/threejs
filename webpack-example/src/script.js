@@ -6,6 +6,11 @@ import * as dat from 'lil-gui'
 import {imageSource} from './door.jpg'
 import { Clock, MeshPhongMaterial } from 'three'
 
+import {FontLoader} from 'three/examples/jsm/loaders/FontLoader.js'
+import {TextGeometry} from 'three/examples/jsm/geometries/TextGeometry.js'
+
+
+
 //*****Debug
 const gui = new dat.GUI({closed: true})
 window.addEventListener('keydown',(event)=>{
@@ -142,6 +147,70 @@ scene.add(cubex)
 //material1.gradientMap= gradientTexture
 
 
+/***FONTS */
+const fontLoader2 = new FontLoader() 
+const matcapTextureLoader1 = textureLoader.load('/textures/matcaps/5.png')
+
+fontLoader2.load(
+    '/fonts/helvetiker_regular.typeface.json',
+    (font2)=>{
+        const textGeometry = new TextGeometry(
+            'Hello :D, I am Julian',
+            {
+                font: font2,
+                size: 0.3,
+                height: 0.1,
+                curveSegments: 4,
+                bevelEnabled: true,
+                bevelThickness: 0.03,
+                bevelSize: 0.02,
+                bevelOffset: 0,
+                bevelSegments: 3  
+            }
+        )
+        /*Another wat to center
+        textGeometry.computeBoundingBox()
+        textGeometry.translate(
+            -textGeometry.boundingBox.max.x / 2,
+            -textGeometry.boundingBox.max.y / 2,
+            -textGeometry.boundingBox.max.z / 2
+        )*/
+
+        textGeometry.center()
+
+        const textMaterial = new THREE.MeshMatcapMaterial({matcap:matcapTextureLoader1})
+        //textMaterial.wireframe = true
+        const text = new THREE.Mesh(textGeometry,textMaterial)
+        scene.add(text)
+
+
+        console.time('donut')
+        const donatGeometry = new THREE.TorusBufferGeometry(0.3,0.3,20,45)
+            
+        for(let i=0; i<40;i++){
+            const donut = new THREE.Mesh(donatGeometry,textMaterial)
+            
+            donut.position.x = (Math.random()-0.5)*10
+            donut.position.y = (Math.random()-0.5)*10
+            donut.position.z = (Math.random()-0.5)*10 
+
+            donut.rotation.x = Math.random() * Math.PI
+            donut.rotation.y = Math.random() * Math.PI
+
+            const scale = Math.random()
+            donut.scale.set(scale,scale,scale)
+
+
+            scene.add(donut)
+        } 
+        console.timeEnd('donut')
+    }
+)
+//Create Donughts
+
+
+
+
 const material1 =new THREE.MeshStandardMaterial()
 //material1.metalness = 0.45
 //material1.roughness = 0.05
@@ -199,6 +268,8 @@ const sphere = new THREE.Mesh(
     material2
 )
 sphere.position.x = -1.5
+sphere.position.y = 1.5
+
 
 sphere.geometry.setAttribute('uv2', new THREE.BufferAttribute(sphere.geometry.attributes.uv.array,2))
 
@@ -206,6 +277,8 @@ const plane = new THREE.Mesh(
     new THREE.PlaneGeometry(1,1,100,100),
     material1
 )
+plane.position.y = 1.5
+
 plane.geometry.setAttribute('uv2', new THREE.BufferAttribute(plane.geometry.attributes.uv.array,2))
 
 const thorus = new THREE.Mesh(
@@ -213,7 +286,7 @@ const thorus = new THREE.Mesh(
     material1
 )
 thorus.position.x=1.5
-
+thorus.position.y = 1.5
 thorus.geometry.setAttribute('uv2', new THREE.BufferAttribute(thorus.geometry.attributes.uv.array,2))
 
 scene.add(sphere,plane, thorus)
@@ -248,7 +321,7 @@ const cube3 = new THREE.Mesh(
 )
 cube3.position.set(-2,0,0)
 groupCubes.add(cube3)
-
+scene.add(groupCubes)
 //CREATE OWN TRIANGLES USING BUFFER GEOMETRY
 /*
 const geomtry2 = new THREE.BufferGeometry()
@@ -385,9 +458,9 @@ renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio,2))
 //Animations
 //GSAP
-//gsap.to(cube3.position, {duration:1,delay:2,x:2})
-//gsap.to(cube2.position, {duration:2,delay:2,y:1})
-//gsap.to(cube1.position, {duration:3,delay:2,z:1})
+gsap.to(cube3.position, {duration:1,delay:2,x:3})
+gsap.to(cube2.position, {duration:2,delay:2,y:2})
+gsap.to(cube1.position, {duration:3,delay:2,z:2})
 
 const clock = new THREE.Clock()
 const tick = () => {
