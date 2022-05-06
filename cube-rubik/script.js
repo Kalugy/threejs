@@ -86,11 +86,14 @@ window.addEventListener('dblclick',()=>{
 
 
 function init() {
+    
+
     camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.1, 100 );
     camera.position.z = 10;
     //camera.position.x = 5;
     //camera.position.y = 7;
-
+    moveUp =1.1
+    separation =1.1
 
     scene = new THREE.Scene();
 
@@ -108,7 +111,13 @@ function init() {
     scene.add( mesh8 );*/
     scene.add( groupCubes );
     scene.add( groupCubes2 );
-    camera.lookAt(groupCubes.position)
+    //camera.lookAt(groupCubes.position)
+    //camera.rotation.x=1
+    camera.position.z=10
+    //camera.rotation.y=2*Math.PI
+    camera.position.x=3
+    camera.position.y=3
+    
     console.log("groupCubes.position",groupCubes.position)
     var canvas2 = document.querySelector('.webgl')
 
@@ -137,7 +146,10 @@ var arrowUp=false;
 var arrowDown=false;
 var arrowRight=false;
 
-var positionStates = [mesh,mesh2,mesh3,mesh4,5,6,7,8,9]
+var positionStates = [mesh,mesh2,mesh3,mesh4,mesh5,mesh6,mesh7,mesh8]
+
+var moveUp 
+var separation 
 
 document.addEventListener('keydown', (event) => {
     var name = event.key;
@@ -219,10 +231,7 @@ const tick = () => {
         arrowDown=false
     }
     if(arrowRight){
-        RotationUpSide(mesh2)
-        RotationUpSide(mesh4)
-        RotationUpSide(mesh6)
-        RotationUpSide(mesh8)
+        RotationUpSide()
         arrowRight=false
     }
     renderer.render(scene, camera)
@@ -231,7 +240,6 @@ const tick = () => {
 tick()
 
 function RotationBackSide(){
-    var moveUp = 3
     var positionStart = new THREE.Vector3(0,0,0)
     var positionStart2 = new THREE.Vector3(0,moveUp,0)
     var positionStart3 = new THREE.Vector3(moveUp,0,0)
@@ -246,21 +254,25 @@ function RotationBackSide(){
     if(meshRelative.position.x==positionStart.x && meshRelative.position.y==positionStart.y){
         meshRelative.position.set(positionStart3.x,positionStart3.y,positionStart3.z)
         positionStates[2] = meshRelative
+        meshRelative.rotation.z = Math.PI / 2 ;
     }
     //Muevo la pieza posicion=1 mesh=cualquiera 
     if(meshRelative1.position.x==positionStart2.x && meshRelative1.position.y==positionStart2.y){
         meshRelative1.position.set(positionStart.x,positionStart.y,positionStart.z)
         positionStates[0] = meshRelative1
+        meshRelative1.rotation.z = Math.PI  ;
     }
     //Muevo la pieza posicion=2 mesh=cualquiera 
     if(meshRelative2.position.x==positionStart3.x && meshRelative2.position.y==positionStart3.y){
         meshRelative2.position.set(positionStart4.x,positionStart4.y,positionStart4.z)
         positionStates[3] = meshRelative2
+        meshRelative2.rotation.z = Math.PI / 2 ;
     }
     //Muevo la pieza posicion=3 mesh=cualquiera 
     if(meshRelative3.position.x==positionStart4.x && meshRelative3.position.y==positionStart4.y){
         meshRelative3.position.set(positionStart2.x,positionStart2.y,positionStart2.z)
         positionStates[1] = meshRelative3
+        meshRelative3.rotation.z = Math.PI / 2 ;
     }
     /*
     if(meshRelative.position.x==positionStart.x && meshRelative.position.y==positionStart.y){
@@ -296,14 +308,53 @@ function RotationBackSide(){
     */
 }
 
-function RotationUpSide(mesh){
-    var moveUp = 3
+function RotationUpSide(){
     var positionStart2 = new THREE.Vector3(0,moveUp,0)
     var positionStart4 = new THREE.Vector3(moveUp,moveUp,0)
     var positionStart6 = new THREE.Vector3(0,moveUp,moveUp)
     var positionStart8 = new THREE.Vector3(moveUp,moveUp,moveUp)
-    
-    //2486
+    //2486 rotation
+    //pos 6 a pos 2
+    //mesh6.rotation.y= 3/2*Math.PI;
+    //pos 2 a pos 4
+    //mesh6.rotation.y= Math.PI;
+    //pos 4 a pos 8
+    //mesh6.rotation.y= Math.PI/2;
+    //pos 8 a pos 2
+    //mesh6.rotation.y = 0
+
+
+    //Moving back side each mesh
+    let meshRelative=positionStates[1]
+    let meshRelative1=positionStates[3]
+    let meshRelative2=positionStates[5]
+    let meshRelative3=positionStates[7]
+    //Muevo la pieza posicion=2 mesh=cualquiera 
+    if(meshRelative.position.x==positionStart2.x && meshRelative.position.y==positionStart2.y){
+        meshRelative.position.set(positionStart4.x,positionStart4.y,positionStart4.z)
+        positionStates[3] = meshRelative
+        meshRelative.rotation.y= Math.PI;
+    }
+    //Muevo la pieza posicion=4 mesh=cualquiera 
+    if(meshRelative1.position.x==positionStart4.x && meshRelative1.position.y==positionStart4.y){
+        meshRelative1.position.set(positionStart8.x,positionStart8.y,positionStart8.z)
+        positionStates[7] = meshRelative1
+        meshRelative1.rotation.y= Math.PI/2;
+    }
+    //Muevo la pieza posicion=6 mesh=cualquiera 
+    if(meshRelative2.position.x==positionStart6.x && meshRelative2.position.y==positionStart6.y){
+        meshRelative2.position.set(positionStart2.x,positionStart2.y,positionStart2.z)
+        positionStates[1] = meshRelative2
+        meshRelative2.rotation.y= 3/2*Math.PI;
+    }
+    //Muevo la pieza posicion=8 mesh=cualquiera 
+    if(meshRelative3.position.x==positionStart8.x && meshRelative3.position.y==positionStart8.y){
+        meshRelative3.position.set(positionStart6.x,positionStart6.y,positionStart6.z)
+        positionStates[5] = meshRelative3
+        meshRelative3.rotation.y = 0
+    }
+
+    /*
     if(mesh.position.x==positionStart2.x && mesh.position.y==positionStart2.y && mesh.position.z==positionStart2.z){
         mesh.position.set(positionStart4.x,positionStart4.y,positionStart4.z)
     }
@@ -315,13 +366,13 @@ function RotationUpSide(mesh){
     }
     else if(mesh.position.x==positionStart6.x && mesh.position.y==positionStart6.y && mesh.position.z==positionStart6.z){
         mesh.position.set(positionStart2.x,positionStart2.y,positionStart2.z)
-    }
+    }*/
     
 }
 
 
 function RotationOtherSide(mesh){
-    var moveUp = 3
+    
     var positionStart = new THREE.Vector3(0,0,0)
     var positionStart2 = new THREE.Vector3(0,moveUp,0)
     var positionStart3 = new THREE.Vector3(moveUp,0,0)
@@ -353,11 +404,11 @@ function CreateInialCubes(){
     for ( let i = 0; i < positionAttribute.count; i += 3 ) {
         //define Colors cube
         switch(true){
-            case (counter<2):color.set( 0xff0000 );break;
+            case (counter<2):color.set( 0x0000ff );break;
             case (counter<4):color.set( 0x00ff00 );break;
-            case (counter<6):color.set( 0x0000ff );break;
-            case (counter<8):color.set( 0xffff00 );break;
-            case (counter<10):color.set( 0xFF9900 );break;
+            case (counter<6):color.set( 0xff0000 );break;
+            case (counter<8):color.set( 0xFF9900 );break;
+            case (counter<10):color.set( 0xffff00 );break;
             case (counter<12):color.set( 0xffffff );break;
             //default: color.set( 0xffffff );
         }
@@ -379,30 +430,33 @@ function CreateInialCubes(){
     const material6 = new THREE.MeshBasicMaterial( {color: 0xffff00} );
 
 
-    mesh = new THREE.Mesh( geometry, material1 );
-    mesh2 = new THREE.Mesh( geometry, material2 );
+    mesh = new THREE.Mesh( geometry, material );
+    mesh2 = new THREE.Mesh( geometry, material );
     mesh3 = new THREE.Mesh( geometry, material3 );
-    mesh4 = new THREE.Mesh( geometry, material4 );
+    mesh4 = new THREE.Mesh( geometry, material );
     mesh.name="Mesh1"
     mesh2.name="Mesh2"
     mesh3.name="Mesh3"
     mesh4.name="Mesh4"
     //Four
     mesh5 = new THREE.Mesh( geometry, material );
-    mesh6 = new THREE.Mesh( geometry, material6 );
+    mesh6 = new THREE.Mesh( geometry, material );
     mesh7 = new THREE.Mesh( geometry, material );
-    mesh8 = new THREE.Mesh( geometry, material5 );
+    mesh8 = new THREE.Mesh( geometry, material );
     mesh5.name="Mesh5"
     mesh6.name="Mesh6"
     mesh7.name="Mesh7"
     mesh8.name="Mesh8"
-    const separation = 3
     mesh.position.set(0,0,0)
+    
+    //mesh.rotation.y= Math.PI / 2;
     mesh2.position.set(0,separation,0)
     mesh3.position.set(separation,0,0)
     mesh4.position.set(separation,separation,0)
 
+    //pos 6 rotation
 
+    
     mesh5.position.set(0,0,separation)
     mesh6.position.set(0,separation,separation)
     mesh7.position.set(separation,0,separation)
@@ -450,6 +504,7 @@ function CreateInialCubes(){
     groupCubes2.add(mesh66)
     groupCubes2.add(mesh77)
     groupCubes2.add(mesh88)
-    groupCubes2.position.x=-7
+    groupCubes2.position.x=5
+    groupCubes2.rotation.z=Math.PI/4;
     groupCubes2.position.y=2
 }
