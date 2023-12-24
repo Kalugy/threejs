@@ -10,7 +10,8 @@
 
 
 let camera, scene, renderer, mesh, mesh2, mesh3, mesh4;
-let mesh11, mesh22, mesh33, mesh44, mesh55, mesh66, mesh77, mesh88;
+let mesh00, mesh11, mesh22, mesh33, mesh44, mesh55, mesh66, mesh77;
+let lmesh00, lmesh11, lmesh22, lmesh33, lmesh44, lmesh55, lmesh66, lmesh77;
 
 var positionStates = []
 const groupCubes = new THREE.Group()
@@ -28,24 +29,6 @@ const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 const clock = new THREE.Clock()
 
-//Controls
-
-var arrowUp=false;
-var arrowDown=false;
-var arrowRight=false;
-var arrowLeft=false;
-var numberFour=false;
-var numberSix=false;
-var numberEight=false;
-var numberFive=false;
-var numberNine=false;
-var numberThree=false;
-var numberSeven=false;
-var numberOne=false;
-
-
-//var positionStates = [mesh,mesh2,mesh3,mesh4,mesh5,mesh6,mesh7,mesh8]
-
 var moveUp 
 var separation 
 var movementArray=""
@@ -54,7 +37,6 @@ var counterMovementUpper=0
 
 const yellowMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00 });
 
-// Create a yellow point at (0, 0, 0)
 const yellowPointGeometry = new THREE.SphereGeometry(0.1, 32, 32);
 const yellowPoint = new THREE.Mesh(yellowPointGeometry, yellowMaterial);
 const yellowPoint2 = new THREE.Mesh(yellowPointGeometry, yellowMaterial);
@@ -101,14 +83,11 @@ renderer = new THREE.WebGLRenderer({
 renderer.setSize( window.innerWidth, window.innerHeight );
 //document.body.appendChild( renderer.domElement );
 
-//animate();
-
 window.addEventListener('resize', () => {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
 });
-
 
 window.addEventListener('mousedown', onMouseDown, false);
 
@@ -362,8 +341,6 @@ function RenderCubeClicked2(){
             case (counter<2):color.set( 0x0000ff );break;
             case (counter<4):color.set( 0x00ff00 );break;
             case (counter<6):color.set( 0xff0000 );break;
-            
-            case (counter<7):color.set( 0xffffff );break;
             case (counter<8):color.set( 0xFF9900 );break;
             case (counter<10):color.set( 0xffff00 );break;
             case (counter<12):color.set( 0xffffff );break;
@@ -379,6 +356,7 @@ function RenderCubeClicked2(){
     geometry.setAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
 
     //second cube
+    mesh00 = new THREE.Mesh( geometry, material );
     mesh11 = new THREE.Mesh( geometry, material );
     mesh22 = new THREE.Mesh( geometry, material );
     mesh33 = new THREE.Mesh( geometry, material );
@@ -386,18 +364,27 @@ function RenderCubeClicked2(){
     mesh55 = new THREE.Mesh( geometry, material );
     mesh66 = new THREE.Mesh( geometry, material );
     mesh77 = new THREE.Mesh( geometry, material );
-    mesh88 = new THREE.Mesh( geometry, material );
+    
+    mesh00.position.set(0,0,0)
+    mesh11.position.set(0,1.1,0)
+    mesh22.position.set(1.1,0,0)
+    mesh33.position.set(1.1,1.1,0)
 
-    mesh11.position.set(0,0,0)
-    mesh22.position.set(0,1.1,0)
-    mesh33.position.set(1.1,0,0)
-    mesh44.position.set(1.1,1.1,0)
+    mesh44.position.set(0,0,1.1)
+    mesh55.position.set(0,1.1,1.1)
+    mesh66.position.set(1.1,0,1.1)
+    mesh77.position.set(1.1,1.1,1.1)
 
-    mesh55.position.set(0,0,1.1)
-    mesh66.position.set(0,1.1,1.1)
-    mesh77.position.set(1.1,0,1.1)
-    mesh88.position.set(1.1,1.1,1.1)
-
+    mesh00.name = 'mesh00'
+    mesh11.name = 'mesh11'
+    mesh22.name = 'mesh22'
+    mesh33.name = 'mesh33'
+    mesh44.name = 'mesh44'
+    mesh55.name = 'mesh55'
+    mesh66.name = 'mesh66'
+    mesh77.name = 'mesh77'
+    
+    groupCubeRender2.add(mesh00)
     groupCubeRender2.add(mesh11)
     groupCubeRender2.add(mesh22)
     groupCubeRender2.add(mesh33)
@@ -405,14 +392,13 @@ function RenderCubeClicked2(){
     groupCubeRender2.add(mesh55)
     groupCubeRender2.add(mesh66)
     groupCubeRender2.add(mesh77)
-    groupCubeRender2.add(mesh88)
-    
-    positionStates = [mesh11,mesh22,mesh33,mesh44,mesh55,mesh66,mesh77,mesh88]
+    positionStates = [mesh00,mesh11,mesh22,mesh33,mesh44,mesh55,mesh66,mesh77]
 }   
 
 
 function toggleMeshVisibility(meshIndicesToShow) {
     const allMeshes = [
+        mesh00,
         mesh11,
         mesh22,
         mesh33,
@@ -420,7 +406,6 @@ function toggleMeshVisibility(meshIndicesToShow) {
         mesh55,
         mesh66,
         mesh77,
-        mesh88,
     ];
 
     // Hide all meshes
@@ -503,36 +488,34 @@ function Create2x2Cube(){
     // define the new attribute
     geometry.setAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
 
+    lmesh00 = new THREE.Mesh( geometry, material );
+    lmesh11 = new THREE.Mesh( geometry, material );
+    lmesh22 = new THREE.Mesh( geometry, material );
+    lmesh33 = new THREE.Mesh( geometry, material );
+    lmesh44 = new THREE.Mesh( geometry, material );
+    lmesh55 = new THREE.Mesh( geometry, material );
+    lmesh66 = new THREE.Mesh( geometry, material );
+    lmesh77 = new THREE.Mesh( geometry, material );
 
-    //second cube
-    mesh11 = new THREE.Mesh( geometry, material );
-    mesh22 = new THREE.Mesh( geometry, material );
-    mesh33 = new THREE.Mesh( geometry, material );
-    mesh44 = new THREE.Mesh( geometry, material );
-    //Four
-    mesh55 = new THREE.Mesh( geometry, material );
-    mesh66 = new THREE.Mesh( geometry, material );
-    mesh77 = new THREE.Mesh( geometry, material );
-    mesh88 = new THREE.Mesh( geometry, material );
+    lmesh00.position.set(0,0,0)
+    lmesh11.position.set(0,1.1,0)
+    lmesh22.position.set(1.1,0,0)
+    lmesh33.position.set(1.1,1.1,0)
 
-    mesh11.position.set(0,0,0)
-    mesh22.position.set(0,1.1,0)
-    mesh33.position.set(1.1,0,0)
-    mesh44.position.set(1.1,1.1,0)
+    lmesh44.position.set(0,0,1.1)
+    lmesh55.position.set(0,1.1,1.1)
+    lmesh66.position.set(1.1,0,1.1)
+    lmesh77.position.set(1.1,1.1,1.1)
 
-    mesh55.position.set(0,0,1.1)
-    mesh66.position.set(0,1.1,1.1)
-    mesh77.position.set(1.1,0,1.1)
-    mesh88.position.set(1.1,1.1,1.1)
-
-    groupCubes2.add(mesh11)
-    groupCubes2.add(mesh22)
-    groupCubes2.add(mesh33)
-    groupCubes2.add(mesh44)
-    groupCubes2.add(mesh55)
-    groupCubes2.add(mesh66)
-    groupCubes2.add(mesh77)
-    groupCubes2.add(mesh88)
+    
+    groupCubes2.add(lmesh00)
+    groupCubes2.add(lmesh11)
+    groupCubes2.add(lmesh22)
+    groupCubes2.add(lmesh33)
+    groupCubes2.add(lmesh44)
+    groupCubes2.add(lmesh55)
+    groupCubes2.add(lmesh66)
+    groupCubes2.add(lmesh77)
     groupCubes2.position.x=-2
     groupCubes2.position.z=-4
     groupCubes2.rotation.z=Math.PI/4;
@@ -665,7 +648,8 @@ var positionStart5 = new THREE.Vector3(0,moveUp,moveUp)
 var positionStart6 = new THREE.Vector3(moveUp,0,moveUp)
 var positionStart7 = new THREE.Vector3(moveUp,moveUp,moveUp)
 
-function rotateAndMove(mesh, newPosition, rotationAngle, clockwise = true, axis = 'Y') {
+
+function rotateAndMove(mesh, newPosition, rotationAngle, clockwise = true, axis = 'Y', index) {
     mesh.position.set(newPosition.x, newPosition.y, newPosition.z);
 
     const rotationAxis = new THREE.Vector3();
@@ -690,25 +674,82 @@ function rotateAndMove(mesh, newPosition, rotationAngle, clockwise = true, axis 
 
     const rotationDirection = clockwise ? 1 : -1;
     mesh.rotateOnWorldAxis(rotationAxis, rotationAngle * rotationDirection);
+
+    console.log('mesh Star', mesh.name)
+    console.log('mesn',mesh)
+    console.log('mesn',index)
+    console.log('mesn',positionStates)
+    positionStates[index] = mesh
+    console.log('mesn end',positionStates)
 }
 
+//move 1,3,5,7 mesh position and rotation clock or anticlock
 function RotationU(clockwise = true) {
-    const indices = [1, 3, 5, 7];
-    indices.forEach((index) => {
-        const positionName = `positionStart${index}`;
-        rotateAndMove(positionStates[index], window[positionName], Math.PI / 2, clockwise);
-    });
+    const index = [1, 3, 5, 7];
+    let meshRelative1=positionStates[index[0]]
+    let meshRelative3=positionStates[index[1]]
+    let meshRelative5=positionStates[index[2]]
+    let meshRelative7=positionStates[index[3]]
+    const rotationAxis = new THREE.Vector3(0, 1, 0);
+    let rotationAngle = Math.PI / 2
+    const rotationDirection = clockwise ? 1 : -1;
+    
+
+    const targetPosition = clockwise
+            ? [positionStart3, positionStart7, positionStart1, positionStart5]
+            : [positionStart5, positionStart1, positionStart7, positionStart3];
+
+
+    positionStates[index[0]].position.set(targetPosition[0].x, targetPosition[0].y, targetPosition[0].z);
+    positionStates[index[1]].position.set(targetPosition[1].x, targetPosition[1].y, targetPosition[1].z);
+    positionStates[index[2]].position.set(targetPosition[2].x, targetPosition[2].y, targetPosition[2].z);
+    positionStates[index[3]].position.set(targetPosition[3].x, targetPosition[3].y, targetPosition[3].z);   
+
+    positionStates[index[0]].rotateOnWorldAxis(rotationAxis, rotationAngle * rotationDirection);
+    positionStates[index[1]].rotateOnWorldAxis(rotationAxis, rotationAngle * rotationDirection);
+    positionStates[index[2]].rotateOnWorldAxis(rotationAxis, rotationAngle * rotationDirection);
+    positionStates[index[3]].rotateOnWorldAxis(rotationAxis, rotationAngle * rotationDirection);
+
+    positionStates[index[0]] = clockwise ? meshRelative5 : meshRelative3;
+    positionStates[index[1]] = clockwise ? meshRelative1 : meshRelative7;
+    positionStates[index[2]] = clockwise ? meshRelative7 : meshRelative1;
+    positionStates[index[3]] = clockwise ? meshRelative3 : meshRelative5;
 }
 
+//fix L rotation
 function RotationL(clockwise = true) {
-    const indices = [0, 1, 4, 5];
-    indices.forEach((index) => {
-        const positionName = `positionStart${index}`;
-        rotateAndMove(positionStates[index], window[positionName], Math.PI / 2, clockwise, 'X');
-    });
+    const index = [0, 1, 4, 5];
+    let meshRelative1=positionStates[index[0]]
+    let meshRelative3=positionStates[index[1]]
+    let meshRelative5=positionStates[index[2]]
+    let meshRelative7=positionStates[index[3]]
+    const rotationAxis = new THREE.Vector3(1, 0, 0);
+    let rotationAngle = Math.PI / 2
+    const rotationDirection = clockwise ? 1 : -1;
+    const targetPosition = clockwise
+            ? [positionStart4, positionStart0, positionStart5, positionStart1]
+            : [positionStart1, positionStart5, positionStart4, positionStart0];
+
+
+    positionStates[index[0]].position.set(targetPosition[0].x, targetPosition[0].y, targetPosition[0].z);
+    positionStates[index[1]].position.set(targetPosition[1].x, targetPosition[1].y, targetPosition[1].z);
+    positionStates[index[2]].position.set(targetPosition[2].x, targetPosition[2].y, targetPosition[2].z);
+    positionStates[index[3]].position.set(targetPosition[3].x, targetPosition[3].y, targetPosition[3].z);   
+
+    positionStates[index[0]].rotateOnWorldAxis(rotationAxis, rotationAngle * rotationDirection);
+    positionStates[index[1]].rotateOnWorldAxis(rotationAxis, rotationAngle * rotationDirection);
+    positionStates[index[2]].rotateOnWorldAxis(rotationAxis, rotationAngle * rotationDirection);
+    positionStates[index[3]].rotateOnWorldAxis(rotationAxis, rotationAngle * rotationDirection);
+
+    positionStates[index[0]] = clockwise ? meshRelative5 : meshRelative3;
+    positionStates[index[1]] = clockwise ? meshRelative1 : meshRelative7;
+    positionStates[index[2]] = clockwise ? meshRelative7 : meshRelative1;
+    positionStates[index[3]] = clockwise ? meshRelative3 : meshRelative5;
 }
 
 function handleKeydown2(event) {
+    
+    console.log(positionStates,'StartState')
     switch (event.key.toUpperCase()) {
         case 'U':
             console.log('Rotating clockwise');
@@ -718,15 +759,17 @@ function handleKeydown2(event) {
             console.log('Rotating anti-clockwise');
             RotationU(false);
             break;
-        case 'L':
+        case 'K':
             console.log('Rotating clockwise');
             RotationL(true);
             break;
-        case 'K':
+        case 'L':
             console.log('Rotating anti-clockwise');
             RotationL(false);
             break;
     
         }
+    
+    console.log(positionStates,'endState')
 }
 
