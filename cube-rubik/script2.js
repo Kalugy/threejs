@@ -683,32 +683,32 @@ function rotateAndMove(mesh, newPosition, rotationAngle, clockwise = true, axis 
     console.log('mesn end',positionStates)
 }
 
-//move 1,3,5,7 mesh position and rotation clock or anticlock
+//U move mesh position and rotation clock or anticlock
 function RotationU(clockwise = true) {
     const index = [1, 3, 5, 7];
+
     let meshRelative1=positionStates[index[0]]
     let meshRelative3=positionStates[index[1]]
     let meshRelative5=positionStates[index[2]]
     let meshRelative7=positionStates[index[3]]
+
     const rotationAxis = new THREE.Vector3(0, 1, 0);
     let rotationAngle = Math.PI / 2
-    const rotationDirection = clockwise ? 1 : -1;
+    const rotationDirection = clockwise ? -1 : 1;
     
-
     const targetPosition = clockwise
             ? [positionStart3, positionStart7, positionStart1, positionStart5]
             : [positionStart5, positionStart1, positionStart7, positionStart3];
 
+    meshRelative1.position.set(targetPosition[0].x, targetPosition[0].y, targetPosition[0].z);
+    meshRelative3.position.set(targetPosition[1].x, targetPosition[1].y, targetPosition[1].z);
+    meshRelative5.position.set(targetPosition[2].x, targetPosition[2].y, targetPosition[2].z);
+    meshRelative7.position.set(targetPosition[3].x, targetPosition[3].y, targetPosition[3].z);   
 
-    positionStates[index[0]].position.set(targetPosition[0].x, targetPosition[0].y, targetPosition[0].z);
-    positionStates[index[1]].position.set(targetPosition[1].x, targetPosition[1].y, targetPosition[1].z);
-    positionStates[index[2]].position.set(targetPosition[2].x, targetPosition[2].y, targetPosition[2].z);
-    positionStates[index[3]].position.set(targetPosition[3].x, targetPosition[3].y, targetPosition[3].z);   
-
-    positionStates[index[0]].rotateOnWorldAxis(rotationAxis, rotationAngle * rotationDirection);
-    positionStates[index[1]].rotateOnWorldAxis(rotationAxis, rotationAngle * rotationDirection);
-    positionStates[index[2]].rotateOnWorldAxis(rotationAxis, rotationAngle * rotationDirection);
-    positionStates[index[3]].rotateOnWorldAxis(rotationAxis, rotationAngle * rotationDirection);
+    meshRelative1.rotateOnWorldAxis(rotationAxis, rotationAngle * rotationDirection);
+    meshRelative3.rotateOnWorldAxis(rotationAxis, rotationAngle * rotationDirection);
+    meshRelative5.rotateOnWorldAxis(rotationAxis, rotationAngle * rotationDirection);
+    meshRelative7.rotateOnWorldAxis(rotationAxis, rotationAngle * rotationDirection);
 
     positionStates[index[0]] = clockwise ? meshRelative5 : meshRelative3;
     positionStates[index[1]] = clockwise ? meshRelative1 : meshRelative7;
@@ -716,59 +716,142 @@ function RotationU(clockwise = true) {
     positionStates[index[3]] = clockwise ? meshRelative3 : meshRelative5;
 }
 
-//fix L rotation
+//D move mesh position and rotation clock or anticlock
+function RotationD(clockwise = true) {
+    const index = [0, 2, 4, 6];
+    const rotationAxis = new THREE.Vector3(0, 1, 0);
+    //where is going to move
+    const targetPosition = clockwise
+            ? [positionStart4, positionStart0, positionStart6, positionStart2]
+            : [positionStart2, positionStart6, positionStart0, positionStart4];
+
+    let meshRelative0=positionStates[index[0]]
+    let meshRelative2=positionStates[index[1]]
+    let meshRelative4=positionStates[index[2]]
+    let meshRelative6=positionStates[index[3]]
+    let rotationAngle = Math.PI / 2
+    const rotationDirection = clockwise ?  -1: 1;
+    
+    meshRelative0.position.set(targetPosition[0].x, targetPosition[0].y, targetPosition[0].z);
+    meshRelative2.position.set(targetPosition[1].x, targetPosition[1].y, targetPosition[1].z);
+    meshRelative4.position.set(targetPosition[2].x, targetPosition[2].y, targetPosition[2].z);
+    meshRelative6.position.set(targetPosition[3].x, targetPosition[3].y, targetPosition[3].z);   
+
+    meshRelative0.rotateOnWorldAxis(rotationAxis, rotationAngle * rotationDirection);
+    meshRelative2.rotateOnWorldAxis(rotationAxis, rotationAngle * rotationDirection);
+    meshRelative4.rotateOnWorldAxis(rotationAxis, rotationAngle * rotationDirection);
+    meshRelative6.rotateOnWorldAxis(rotationAxis, rotationAngle * rotationDirection);
+
+    positionStates[index[0]] = clockwise ? meshRelative2 : meshRelative4;
+    positionStates[index[1]] = clockwise ? meshRelative6 : meshRelative0;
+    positionStates[index[2]] = clockwise ? meshRelative0 : meshRelative6;
+    positionStates[index[3]] = clockwise ? meshRelative4 : meshRelative2;
+}
+
+//L move mesh position and rotation clock or anticlock
 function RotationL(clockwise = true) {
     const index = [0, 1, 4, 5];
-    let meshRelative1=positionStates[index[0]]
-    let meshRelative3=positionStates[index[1]]
-    let meshRelative5=positionStates[index[2]]
-    let meshRelative7=positionStates[index[3]]
     const rotationAxis = new THREE.Vector3(1, 0, 0);
-    let rotationAngle = Math.PI / 2
-    const rotationDirection = clockwise ? 1 : -1;
     const targetPosition = clockwise
             ? [positionStart4, positionStart0, positionStart5, positionStart1]
-            : [positionStart1, positionStart5, positionStart4, positionStart0];
+            : [positionStart1, positionStart5, positionStart0, positionStart4];
 
+    let meshRelative0=positionStates[index[0]]
+    let meshRelative1=positionStates[index[1]]
+    let meshRelative4=positionStates[index[2]]
+    let meshRelative5=positionStates[index[3]]
+    let rotationAngle = Math.PI / 2
+    const rotationDirection = clockwise ?  -1: 1;
+    
+    meshRelative0.position.set(targetPosition[0].x, targetPosition[0].y, targetPosition[0].z);
+    meshRelative1.position.set(targetPosition[1].x, targetPosition[1].y, targetPosition[1].z);
+    meshRelative4.position.set(targetPosition[2].x, targetPosition[2].y, targetPosition[2].z);
+    meshRelative5.position.set(targetPosition[3].x, targetPosition[3].y, targetPosition[3].z);   
 
-    positionStates[index[0]].position.set(targetPosition[0].x, targetPosition[0].y, targetPosition[0].z);
-    positionStates[index[1]].position.set(targetPosition[1].x, targetPosition[1].y, targetPosition[1].z);
-    positionStates[index[2]].position.set(targetPosition[2].x, targetPosition[2].y, targetPosition[2].z);
-    positionStates[index[3]].position.set(targetPosition[3].x, targetPosition[3].y, targetPosition[3].z);   
+    meshRelative0.rotateOnWorldAxis(rotationAxis, rotationAngle * rotationDirection);
+    meshRelative1.rotateOnWorldAxis(rotationAxis, rotationAngle * rotationDirection);
+    meshRelative4.rotateOnWorldAxis(rotationAxis, rotationAngle * rotationDirection);
+    meshRelative5.rotateOnWorldAxis(rotationAxis, rotationAngle * rotationDirection);
 
-    positionStates[index[0]].rotateOnWorldAxis(rotationAxis, rotationAngle * rotationDirection);
-    positionStates[index[1]].rotateOnWorldAxis(rotationAxis, rotationAngle * rotationDirection);
-    positionStates[index[2]].rotateOnWorldAxis(rotationAxis, rotationAngle * rotationDirection);
-    positionStates[index[3]].rotateOnWorldAxis(rotationAxis, rotationAngle * rotationDirection);
-
-    positionStates[index[0]] = clockwise ? meshRelative5 : meshRelative3;
-    positionStates[index[1]] = clockwise ? meshRelative1 : meshRelative7;
-    positionStates[index[2]] = clockwise ? meshRelative7 : meshRelative1;
-    positionStates[index[3]] = clockwise ? meshRelative3 : meshRelative5;
+    positionStates[index[0]] = clockwise ? meshRelative1 : meshRelative4;
+    positionStates[index[1]] = clockwise ? meshRelative5 : meshRelative0;
+    positionStates[index[2]] = clockwise ? meshRelative0 : meshRelative5;
+    positionStates[index[3]] = clockwise ? meshRelative4 : meshRelative1;
 }
+
+
+//R move mesh position and rotation clock or anticlock
+function RotationR(clockwise = true) {
+    const index = [2, 3, 6, 7];
+    const rotationAxis = new THREE.Vector3(1, 0, 0);
+    //where is going to move
+    const targetPosition = clockwise
+            ? [positionStart6, positionStart2, positionStart7, positionStart3]
+            : [positionStart3, positionStart7, positionStart2, positionStart6];
+
+    let meshRelative2=positionStates[index[0]]
+    let meshRelative3=positionStates[index[1]]
+    let meshRelative6=positionStates[index[2]]
+    let meshRelative7=positionStates[index[3]]
+    let rotationAngle = Math.PI / 2
+    const rotationDirection = clockwise ?  -1: 1;
+    
+    meshRelative2.position.set(targetPosition[0].x, targetPosition[0].y, targetPosition[0].z);
+    meshRelative3.position.set(targetPosition[1].x, targetPosition[1].y, targetPosition[1].z);
+    meshRelative6.position.set(targetPosition[2].x, targetPosition[2].y, targetPosition[2].z);
+    meshRelative7.position.set(targetPosition[3].x, targetPosition[3].y, targetPosition[3].z);   
+
+    meshRelative2.rotateOnWorldAxis(rotationAxis, rotationAngle * rotationDirection);
+    meshRelative3.rotateOnWorldAxis(rotationAxis, rotationAngle * rotationDirection);
+    meshRelative6.rotateOnWorldAxis(rotationAxis, rotationAngle * rotationDirection);
+    meshRelative7.rotateOnWorldAxis(rotationAxis, rotationAngle * rotationDirection);
+
+    positionStates[index[0]] = clockwise ? meshRelative3 : meshRelative6;
+    positionStates[index[1]] = clockwise ? meshRelative7 : meshRelative2;
+    positionStates[index[2]] = clockwise ? meshRelative2 : meshRelative7;
+    positionStates[index[3]] = clockwise ? meshRelative6 : meshRelative3;
+}
+
 
 function handleKeydown2(event) {
     
     console.log(positionStates,'StartState')
     switch (event.key.toUpperCase()) {
-        case 'U':
-            console.log('Rotating clockwise');
-            RotationU(true);
-            break;
-        case 'Y':
-            console.log('Rotating anti-clockwise');
-            RotationU(false);
-            break;
-        case 'K':
-            console.log('Rotating clockwise');
-            RotationL(true);
-            break;
-        case 'L':
-            console.log('Rotating anti-clockwise');
-            RotationL(false);
-            break;
+    case 'U':
+        console.log('Rotating clockwise U');
+        RotationU(true);
+        break;
+    case 'Y':
+        console.log('Rotating anti-clockwise Y');
+        RotationU(false);
+        break;
+    case 'K':
+        console.log('Rotating clockwise L');
+        RotationL(true);
+        break;
+    case 'L':
+        console.log('Rotating anti-clockwise K');
+        RotationL(false);
+        break;
+    case 'R':
+        console.log('Rotating clockwise L');
+        RotationR(true);
+        break;
+    case 'T':
+        console.log('Rotating anti-clockwise K');
+        RotationR(false);
+        break;
+    case 'V'://D
+        console.log('Rotating clockwise L');
+        RotationD(true);
+        break;
+    case 'B'://D'
+        console.log('Rotating anti-clockwise K');
+        RotationD(false);
+        break;
     
-        }
+
+    }
     
     console.log(positionStates,'endState')
 }
