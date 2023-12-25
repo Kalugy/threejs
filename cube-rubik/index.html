@@ -36,38 +36,53 @@
           cursor: pointer;
           z-index: 5;
         }
-    
-        .hidden-image {
-          display: none;
-          position: fixed;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          background: rgba(0, 0, 0, 0.7);
-          justify-content: center;
-          align-items: center;
-        }
-    
-        .hidden-image img {
-          max-width: 80%;
-          max-height: 80%;
-        }
+        .hidden-image-container {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+            }
+
+            .hidden-image {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            position: relative;
+            }
+
+            .close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 20px;
+            cursor: pointer;
+            }
       </style>
 </head>
 <body>
-    <!-- <input id="textInput" type="text" class="inputs" placeholder="Type 'U'" style="position: absolute;"> -->
-
     <canvas class="webgl"> </canvas>
 
     <div class="floating-button" id="floatingButton" onclick="toggleImage()">
         <span class="icon">?</span>
-      </div>
-      
-      <div class="hidden-image" id="imageContainer">
-        <a href="https://ibb.co/Mn7sTWn"><img src="https://i.ibb.co/sjq2Skj/cube.png" alt="cube" border="0" /></a>
-        dsadsa
-      </div>
+    </div>
+    
+    <div class="hidden-image-container" id="imageContainer">
+        <div class="hidden-image">
+            <span class="close-button" onclick="toggleImage()">×</span>
+            
+            <a href="https://ibb.co/Mn7sTWn"><img src="https://i.ibb.co/sjq2Skj/cube.png" alt="cube" border="0" /></a>
+            <div>
+                <p>Camera: ZSXC</p>
+                <p>Zoom in-out: QE</p>
+            </div>
+        </div>
+    </div>
 
     <script src="./three.min.js"></script>
     <script src="./script2.js"></script>
