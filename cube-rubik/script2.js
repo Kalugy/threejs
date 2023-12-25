@@ -13,6 +13,7 @@ let camera, scene, renderer, mesh, mesh2, mesh3, mesh4;
 let mesh00, mesh11, mesh22, mesh33, mesh44, mesh55, mesh66, mesh77;
 let lmesh00, lmesh11, lmesh22, lmesh33, lmesh44, lmesh55, lmesh66, lmesh77;
 
+let activeCube;
 var positionStates = []
 const groupCubes = new THREE.Group()
 const groupCubes2 = new THREE.Group()
@@ -130,10 +131,10 @@ function toggleGroupVisibility(group, group2) {
 
 // Handle key events for camera movement
 const keyState = {
-    W: false,
-    A: false,
     S: false,
-    D: false,
+    Z: false,
+    X: false,
+    C: false,
     Q: false,
     E: false,
     SPACE: false,
@@ -158,17 +159,17 @@ window.addEventListener('keyup', (event) => {
 
 function handleKey(keyCode, isPressed) {
     switch (keyCode) {
-        case 'KeyW':
-            keyState.W = isPressed;
-            break;
-        case 'KeyA':
-            keyState.A = isPressed;
-            break;
         case 'KeyS':
             keyState.S = isPressed;
             break;
-        case 'KeyD':
-            keyState.D = isPressed;
+        case 'KeyZ':
+            keyState.Z = isPressed;
+            break;
+        case 'KeyX':
+            keyState.X = isPressed;
+            break;
+        case 'KeyC':
+            keyState.C = isPressed;
             break;
         case 'KeyQ':
             keyState.Q = isPressed;
@@ -224,18 +225,18 @@ const tick = () => {
     groupCubesOne.rotation.x = 0.35 * elapseTime
     groupCubesThree.rotation.x = 0.35 * elapseTime
     
-    if (keyState.W || keyState.S) {
-        const phiDelta = phiSpeed * delta * (keyState.W ? -1 : 1);
+    if (keyState.S || keyState.X) {
+        const phiDelta = phiSpeed * delta * (keyState.S ? -1 : 1);
 
         const spherical = new THREE.Spherical().setFromVector3(camera.position);
         spherical.phi = Math.max(0.1, Math.min(Math.PI - 0.1, spherical.phi + phiDelta));
 
         camera.position.setFromSpherical(spherical);
     }
-    if (keyState.A || keyState.D) {
+    if (keyState.Z || keyState.C) {
         let thetaDelta = thetaSpeed * delta;
 
-        if (keyState.A) thetaDelta *= -1; // Reverse direction for A
+        if (keyState.Z) thetaDelta *= -1; // Reverse direction for A
 
         let spherical = new THREE.Spherical().setFromVector3(camera.position);
         spherical.theta += thetaDelta;
@@ -585,7 +586,6 @@ function CreateCube1(){
     groupCubes.add(mesh0)    
 }
 
-let activeCube;
 
 // Function to switch the active cube
 function setActiveCube(cube) {
@@ -610,32 +610,22 @@ function attachKeydownEventListener() {
 function handleKeydown(event) {
     // Determine which key was pressed and set the rotation accordingly
     let axis;
+    const isShiftPressed = event.shiftKey;
+    const key = event.key.toUpperCase();
 
-    switch (event.key.toUpperCase()) {
+    switch (key) {
         case 'U':
             // Rotate 90 degrees clockwise around the world Y-axis for 'U'
             axis = new THREE.Vector3(0, 1, 0);
-            groupCubeRender.rotateOnWorldAxis(axis, Math.PI / 2);
+            groupCubeRender.rotateOnWorldAxis(axis, isShiftPressed ? -Math.PI / 2 : Math.PI / 2);
             break;
-        case 'Y':
-            // Rotate 90 degrees anticlockwise around the world Y-axis for 'T'
-            axis = new THREE.Vector3(0, 1, 0);
-            groupCubeRender.rotateOnWorldAxis(axis, -Math.PI / 2);
-            break;
-        case 'R':
+        case 'F':
             // Rotate 90 degrees clockwise around the world X-axis for 'R'
             axis = new THREE.Vector3(1, 0, 0);
-            groupCubeRender.rotateOnWorldAxis(axis, Math.PI / 2);
-            break;
-        case 'T':
-            // Rotate 90 degrees anticlockwise around the world X-axis for 'L'
-            axis = new THREE.Vector3(1, 0, 0);
-            groupCubeRender.rotateOnWorldAxis(axis, -Math.PI / 2);
+            groupCubeRender.rotateOnWorldAxis(axis, isShiftPressed ? -Math.PI / 2 : Math.PI / 2);
             break;
     }
 
-    // Render the scene
-    renderer.render(scene, camera);
 }
 
 
@@ -730,7 +720,7 @@ function RotationD(clockwise = true) {
     let meshRelative4=positionStates[index[2]]
     let meshRelative6=positionStates[index[3]]
     let rotationAngle = Math.PI / 2
-    const rotationDirection = clockwise ?  -1: 1;
+    const rotationDirection = clockwise ? 1: -1;
     
     meshRelative0.position.set(targetPosition[0].x, targetPosition[0].y, targetPosition[0].z);
     meshRelative2.position.set(targetPosition[1].x, targetPosition[1].y, targetPosition[1].z);
@@ -813,46 +803,96 @@ function RotationR(clockwise = true) {
 }
 
 
-function handleKeydown2(event) {
-    
-    console.log(positionStates,'StartState')
-    switch (event.key.toUpperCase()) {
-    case 'U':
-        console.log('Rotating clockwise U');
-        RotationU(true);
-        break;
-    case 'Y':
-        console.log('Rotating anti-clockwise Y');
-        RotationU(false);
-        break;
-    case 'K':
-        console.log('Rotating clockwise L');
-        RotationL(true);
-        break;
-    case 'L':
-        console.log('Rotating anti-clockwise K');
-        RotationL(false);
-        break;
-    case 'R':
-        console.log('Rotating clockwise L');
-        RotationR(true);
-        break;
-    case 'T':
-        console.log('Rotating anti-clockwise K');
-        RotationR(false);
-        break;
-    case 'V'://D
-        console.log('Rotating clockwise L');
-        RotationD(true);
-        break;
-    case 'B'://D'
-        console.log('Rotating anti-clockwise K');
-        RotationD(false);
-        break;
-    
+//F move mesh position and rotation clock or anticlock
+function RotationF(clockwise = true) {
+    const index = [4, 5, 6, 7];
+    const rotationAxis = new THREE.Vector3(0, 0, 1);
+    //where is going to move
+    const targetPosition = clockwise
+            ? [positionStart5, positionStart7, positionStart4, positionStart6]
+            : [positionStart6, positionStart4, positionStart7, positionStart5];
 
+    let meshRelative4=positionStates[index[0]]
+    let meshRelative5=positionStates[index[1]]
+    let meshRelative6=positionStates[index[2]]
+    let meshRelative7=positionStates[index[3]]
+    let rotationAngle = Math.PI / 2
+    const rotationDirection = clockwise ?  -1: 1;
+    
+    meshRelative4.position.set(targetPosition[0].x, targetPosition[0].y, targetPosition[0].z);
+    meshRelative5.position.set(targetPosition[1].x, targetPosition[1].y, targetPosition[1].z);
+    meshRelative6.position.set(targetPosition[2].x, targetPosition[2].y, targetPosition[2].z);
+    meshRelative7.position.set(targetPosition[3].x, targetPosition[3].y, targetPosition[3].z);   
+
+    meshRelative4.rotateOnWorldAxis(rotationAxis, rotationAngle * rotationDirection);
+    meshRelative5.rotateOnWorldAxis(rotationAxis, rotationAngle * rotationDirection);
+    meshRelative6.rotateOnWorldAxis(rotationAxis, rotationAngle * rotationDirection);
+    meshRelative7.rotateOnWorldAxis(rotationAxis, rotationAngle * rotationDirection);
+
+    positionStates[index[0]] = clockwise ? meshRelative6 : meshRelative5;
+    positionStates[index[1]] = clockwise ? meshRelative4 : meshRelative7;
+    positionStates[index[2]] = clockwise ? meshRelative7 : meshRelative4;
+    positionStates[index[3]] = clockwise ? meshRelative5 : meshRelative6;
+}
+
+//B move mesh position and rotation clock or anticlock
+function RotationB(clockwise = true) {
+    const index = [0, 1, 2, 3];
+    const rotationAxis = new THREE.Vector3(0, 0, 1);
+    //where is going to move
+    const targetPosition = clockwise
+            ? [positionStart2, positionStart0, positionStart3, positionStart1]
+            : [positionStart1, positionStart3, positionStart0, positionStart2];
+
+    let meshRelative0=positionStates[index[0]]
+    let meshRelative1=positionStates[index[1]]
+    let meshRelative2=positionStates[index[2]]
+    let meshRelative3=positionStates[index[3]]
+    let rotationAngle = Math.PI / 2
+    const rotationDirection = clockwise ? 1: -1;
+    
+    meshRelative0.position.set(targetPosition[0].x, targetPosition[0].y, targetPosition[0].z);
+    meshRelative1.position.set(targetPosition[1].x, targetPosition[1].y, targetPosition[1].z);
+    meshRelative2.position.set(targetPosition[2].x, targetPosition[2].y, targetPosition[2].z);
+    meshRelative3.position.set(targetPosition[3].x, targetPosition[3].y, targetPosition[3].z);   
+
+    meshRelative0.rotateOnWorldAxis(rotationAxis, rotationAngle * rotationDirection);
+    meshRelative1.rotateOnWorldAxis(rotationAxis, rotationAngle * rotationDirection);
+    meshRelative2.rotateOnWorldAxis(rotationAxis, rotationAngle * rotationDirection);
+    meshRelative3.rotateOnWorldAxis(rotationAxis, rotationAngle * rotationDirection);
+
+    positionStates[index[0]] = clockwise ? meshRelative1 : meshRelative2;
+    positionStates[index[1]] = clockwise ? meshRelative3 : meshRelative0;
+    positionStates[index[2]] = clockwise ? meshRelative0 : meshRelative3;
+    positionStates[index[3]] = clockwise ? meshRelative2 : meshRelative1;
+}
+
+
+function handleKeydown2(event) {
+    const isShiftPressed = event.shiftKey;
+    const key = event.key.toUpperCase();
+
+    switch (key) {
+        case 'U':
+            RotationU(!isShiftPressed);
+            break;
+        case 'L':
+            RotationL(isShiftPressed);
+            break;
+        case 'R':
+            RotationR(!isShiftPressed);
+            break;
+        case 'D':
+            RotationD(!isShiftPressed);
+            break;
+        case 'F':
+            RotationF(!isShiftPressed);
+            break;
+        case 'B':
+            RotationB(!isShiftPressed);
+            break;
     }
     
-    console.log(positionStates,'endState')
 }
+
 
