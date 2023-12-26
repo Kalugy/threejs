@@ -1,0 +1,80 @@
+
+body {
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+}
+
+.floating-button {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  width: 50px;
+  height: 50px;
+  background-color: #3498db;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  z-index: 5;
+}
+.hidden-image-container {
+display: none;
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background: rgba(0, 0, 0, 0.7);
+justify-content: center;
+align-items: center;
+}
+
+.hidden-image {
+background-color: white;
+padding: 20px;
+border-radius: 8px;
+text-align: center;
+position: relative;
+
+}
+
+.close-button {
+position: absolute;
+top: 10px;
+right: 10px;
+font-size: 20px;
+cursor: pointer;
+}
+.instructions-container {
+margin: 0 7rem ;
+padding: 0 20px;
+background-color: #f0f0f0;
+border: 1px solid #ccc;
+border-radius: 5px;
+}
+
+.instructions-title {
+margin-bottom: 10px;
+}
+
+.instructions-list {
+list-style-type: none;
+padding: 0 0 0 1.5rem;
+text-align: left;
+}
+
+.instructions-list-item::before {
+content: '\2022'; /* Bullet character */
+color: #007bff; /* Bullet color */
+display: inline-block;
+width: 1em;
+margin-left: -1em;
+}
+
+.instructions-subtitle {
+color: #007bff; /* Title color */
+}

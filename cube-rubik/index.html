@@ -5,65 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Basic Scene</title>
-    <style>
-        body {
-          padding: 0;
-          margin: 0;
-          overflow: hidden;
-        }
-        
-    </style>
-    <link rel="stylesheet" type="text/css" href="styles.css">
-    <style>
-        body {
-          margin: 0;
-          overflow: hidden;
-        }
-    
-        .floating-button {
-          position: absolute;
-          bottom: 16px;
-          left: 16px;
-          width: 50px;
-          height: 50px;
-          background-color: #3498db;
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          color: white;
-          font-size: 24px;
-          cursor: pointer;
-          z-index: 5;
-        }
-        .hidden-image-container {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            justify-content: center;
-            align-items: center;
-            }
-
-            .hidden-image {
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            text-align: center;
-            position: relative;
-            }
-
-            .close-button {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            font-size: 20px;
-            cursor: pointer;
-            }
-      </style>
+    <link rel="stylesheet" href="main.css" type="text/css">
 </head>
 <body>
     <canvas class="webgl"> </canvas>
@@ -75,12 +17,21 @@
     <div class="hidden-image-container" id="imageContainer">
         <div class="hidden-image">
             <span class="close-button" onclick="toggleImage()">×</span>
-            
-            <a href="https://ibb.co/Mn7sTWn"><img src="https://i.ibb.co/sjq2Skj/cube.png" alt="cube" border="0" /></a>
-            <div>
-                <p>Camera: ZSXC</p>
-                <p>Zoom in-out: QE</p>
+            <div class="instructions-container">
+                <p class="instructions-title"><strong>Instructions:</strong></p>
+                <ul class="instructions-list">
+                    <li class="instructions-list-item">Select an object</li>
+                    <li class="instructions-list-item">Move with U, or Shift U</li>
+                </ul>
+                
+                <p class="instructions-subtitle"><strong>Additional Keys:</strong></p>
+                <ul class="instructions-list">
+                    <li class="instructions-list-item">Camera Up, Down, Right, Left: Z, S, X, C</li>
+                    <li class="instructions-list-item">Zoom In/Out: Q, E</li>
+                </ul>
             </div>
+            <a href="https://ibb.co/Mn7sTWn"><img src="https://i.ibb.co/sjq2Skj/cube.png" alt="cube" border="0" /></a>
+            
         </div>
     </div>
 

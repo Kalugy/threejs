@@ -4,7 +4,7 @@
 //see if this is posible on click the cube render the cube who click x
 //move screen to debug the movements x
 //make the 1D cube movement x
-//make the 2d cube movement
+//make the 2d cube movement X
 //put text to show instructions
 //better UI
 
@@ -30,7 +30,41 @@ const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 const clock = new THREE.Clock()
 
-var moveUp 
+
+//
+const matFloor = new THREE.MeshPhongMaterial( { color: 0x808080 } );
+const matBox = new THREE.MeshPhongMaterial( { color: 0xaaaaaa } );
+
+const geoFloor = new THREE.PlaneGeometry( 100, 100 );
+const geoBox = new THREE.BoxGeometry( 0.3, 0.1, 0.2 );
+
+const mshFloor = new THREE.Mesh( geoFloor, matFloor );
+mshFloor.rotation.x = - Math.PI * 0.5;
+const mshBox = new THREE.Mesh( geoBox, matBox );
+
+const ambient = new THREE.AmbientLight( 0x444444 );
+
+const spotLight1 = createSpotlight( 0x404040 );
+const spotLight2 = createSpotlight( 0x404040 );
+
+let lightHelper1, lightHelper2, lightHelper3;
+
+function createSpotlight( color ) {
+
+    const newObj = new THREE.SpotLight( color, 10 );
+
+    newObj.castShadow = true;
+    newObj.angle = 0.8;
+    newObj.penumbra = 0.2;
+    newObj.decay = 2;
+    newObj.distance = 50;
+
+    return newObj;
+
+}
+//
+
+
 var separation 
 var movementArray=""
 var a=0;
@@ -45,8 +79,7 @@ const yellowPoint2 = new THREE.Mesh(yellowPointGeometry, yellowMaterial);
 camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.1, 100 );
 camera.position.z = 10;
 scene = new THREE.Scene();
-moveUp = 1.1
-separation = 2
+separation = 1.02
 Create1x1Cube()
 Create2x2Cube()
 RenderCubeClicked()
@@ -56,18 +89,18 @@ scene.add( groupCubesOne )
 scene.add( groupCubes2 );
 scene.add( groupCubeRender );
 scene.add( groupCubeRender2 );
-scene.add(arrowR);
-scene.add(arrowL);
-scene.add(arrowU);
-scene.add(arrowD);
+// scene.add(arrowR);
+// scene.add(arrowL);
+// scene.add(arrowU);
+// scene.add(arrowD);
 groupCubeRender.visible = false
 groupCubeRender2.visible = false
 
 
 
 yellowPoint2.position.x = 1;
-scene.add(yellowPoint);
-scene.add(yellowPoint2);
+//scene.add(yellowPoint);
+//scene.add(yellowPoint2);
 
 camera.lookAt(yellowPoint.position)
 
@@ -83,6 +116,29 @@ renderer = new THREE.WebGLRenderer({
 //renderer = new THREE.WebGLRenderer( { antialias: true } );
 renderer.setSize( window.innerWidth, window.innerHeight );
 //document.body.appendChild( renderer.domElement );
+
+//
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+spotLight1.position.set( 5, 5, 5 );
+lightHelper1 = new THREE.SpotLightHelper( spotLight1 );
+
+spotLight2.position.set( -8, -8, -8 );
+lightHelper2 = new THREE.SpotLightHelper( spotLight2 );
+
+mshFloor.receiveShadow = true;
+mshFloor.position.set( 0, -7, 0 );
+
+// mshBox.castShadow = true;
+// mshBox.receiveShadow = true;
+// mshBox.position.set( 0, 0.5, 0 );
+
+scene.add( mshFloor );
+//scene.add( mshBox );
+scene.add( ambient );
+scene.add( spotLight1, spotLight2 );
+//scene.add( lightHelper1, lightHelper2 );
+//
 
 window.addEventListener('resize', () => {
     camera.aspect = window.innerWidth / window.innerHeight;
@@ -293,7 +349,12 @@ tick()
 function RenderCubeClicked(){
     const geometry = new THREE.BoxGeometry( 1, 1, 1 ).toNonIndexed();
     // vertexColors must be true so vertex colors can be used in the shader
-    const material = new THREE.MeshBasicMaterial( { vertexColors: true } ); 
+    const material = new THREE.MeshStandardMaterial({
+        color: 0xffffff,      // Base color of the material
+        vertexColors: true,   // Enable vertex colors
+        metalness: 0.5,       // How metallic the material is
+        roughness: 0.8,       // How rough the material is
+    });
     const positionAttribute = geometry.getAttribute( 'position' );
     const colors = [];
     const color = new THREE.Color();
@@ -320,6 +381,8 @@ function RenderCubeClicked(){
 
     
     meshOne = new THREE.Mesh( geometry, material );
+    meshOne.castShadow = true;
+    meshOne.receiveShadow = true;
     groupCubeRender.add(meshOne)
     groupCubeRender.position.x=0
     groupCubeRender.position.z=1
@@ -331,7 +394,12 @@ function RenderCubeClicked(){
 function RenderCubeClicked2(){
     const geometry = new THREE.BoxGeometry( 1, 1, 1 ).toNonIndexed();
 	// vertexColors must be true so vertex colors can be used in the shader
-    const material = new THREE.MeshBasicMaterial( { vertexColors: true } ); 
+    const material = new THREE.MeshStandardMaterial({
+        color: 0xffffff,      // Base color of the material
+        vertexColors: true,   // Enable vertex colors
+        metalness: 0.4,       // How metallic the material is
+        roughness: 0.8,       // How rough the material is
+    });
     const positionAttribute = geometry.getAttribute( 'position' );
     const colors = [];
     const color = new THREE.Color();
@@ -356,7 +424,7 @@ function RenderCubeClicked2(){
     // define the new attribute
     geometry.setAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
 
-    //second cube
+    
     mesh00 = new THREE.Mesh( geometry, material );
     mesh11 = new THREE.Mesh( geometry, material );
     mesh22 = new THREE.Mesh( geometry, material );
@@ -366,15 +434,32 @@ function RenderCubeClicked2(){
     mesh66 = new THREE.Mesh( geometry, material );
     mesh77 = new THREE.Mesh( geometry, material );
     
+    mesh00.castShadow = true;
+    mesh00.receiveShadow = true;
+    mesh11.castShadow = true;
+    mesh11.receiveShadow = true;
+    mesh22.castShadow = true;
+    mesh22.receiveShadow = true;
+    mesh33.castShadow = true;
+    mesh33.receiveShadow = true;
+    mesh44.castShadow = true;
+    mesh44.receiveShadow = true;
+    mesh55.castShadow = true;
+    mesh55.receiveShadow = true;
+    mesh66.castShadow = true;
+    mesh66.receiveShadow = true;
+    mesh77.castShadow = true;
+    mesh77.receiveShadow = true;
+    
     mesh00.position.set(0,0,0)
-    mesh11.position.set(0,1.1,0)
-    mesh22.position.set(1.1,0,0)
-    mesh33.position.set(1.1,1.1,0)
+    mesh11.position.set(0,separation,0)
+    mesh22.position.set(separation,0,0)
+    mesh33.position.set(separation,separation,0)
 
-    mesh44.position.set(0,0,1.1)
-    mesh55.position.set(0,1.1,1.1)
-    mesh66.position.set(1.1,0,1.1)
-    mesh77.position.set(1.1,1.1,1.1)
+    mesh44.position.set(0,0,separation)
+    mesh55.position.set(0,separation,separation)
+    mesh66.position.set(separation,0,separation)
+    mesh77.position.set(separation,separation,separation)
 
     mesh00.name = 'mesh00'
     mesh11.name = 'mesh11'
@@ -499,14 +584,14 @@ function Create2x2Cube(){
     lmesh77 = new THREE.Mesh( geometry, material );
 
     lmesh00.position.set(0,0,0)
-    lmesh11.position.set(0,1.1,0)
-    lmesh22.position.set(1.1,0,0)
-    lmesh33.position.set(1.1,1.1,0)
+    lmesh11.position.set(0,separation,0)
+    lmesh22.position.set(separation,0,0)
+    lmesh33.position.set(separation,separation,0)
 
-    lmesh44.position.set(0,0,1.1)
-    lmesh55.position.set(0,1.1,1.1)
-    lmesh66.position.set(1.1,0,1.1)
-    lmesh77.position.set(1.1,1.1,1.1)
+    lmesh44.position.set(0,0,separation)
+    lmesh55.position.set(0,separation,separation)
+    lmesh66.position.set(separation,0,separation)
+    lmesh77.position.set(separation,separation,separation)
 
     
     groupCubes2.add(lmesh00)
@@ -630,13 +715,13 @@ function handleKeydown(event) {
 
 
 var positionStart0 = new THREE.Vector3(0,0,0)
-var positionStart1 = new THREE.Vector3(0,moveUp,0)
-var positionStart2 = new THREE.Vector3(moveUp,0,0)
-var positionStart3 = new THREE.Vector3(moveUp,moveUp,0)
-var positionStart4 = new THREE.Vector3(0,0,moveUp)
-var positionStart5 = new THREE.Vector3(0,moveUp,moveUp)
-var positionStart6 = new THREE.Vector3(moveUp,0,moveUp)
-var positionStart7 = new THREE.Vector3(moveUp,moveUp,moveUp)
+var positionStart1 = new THREE.Vector3(0,separation,0)
+var positionStart2 = new THREE.Vector3(separation,0,0)
+var positionStart3 = new THREE.Vector3(separation,separation,0)
+var positionStart4 = new THREE.Vector3(0,0,separation)
+var positionStart5 = new THREE.Vector3(0,separation,separation)
+var positionStart6 = new THREE.Vector3(separation,0,separation)
+var positionStart7 = new THREE.Vector3(separation,separation,separation)
 
 
 function rotateAndMove(mesh, newPosition, rotationAngle, clockwise = true, axis = 'Y', index) {
