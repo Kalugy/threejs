@@ -5,8 +5,8 @@
 //move screen to debug the movements x
 //make the 1D cube movement x
 //make the 2d cube movement X
-//put text to show instructions
-//better UI
+//put text to show instructions X
+//better UI X
 
 
 let camera, scene, renderer, mesh, mesh2, mesh3, mesh4;
@@ -139,6 +139,22 @@ scene.add( ambient );
 scene.add( spotLight1, spotLight2 );
 //scene.add( lightHelper1, lightHelper2 );
 //
+
+
+//coaster//
+// Create coaster structure
+// Create coaster track
+const trackGeometry = new THREE.TubeGeometry(new THREE.LineCurve3(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 8, 0)), 100, 0.2, 8, false);
+const trackMaterial = new THREE.MeshPhongMaterial({ color: 0xd3d3d3 });
+const track = new THREE.Mesh(trackGeometry, trackMaterial);
+track.position.set(-5,-8, 1)
+track.castShadow = true;
+track.receiveShadow = true;
+scene.add(track);
+
+//
+
+
 
 window.addEventListener('resize', () => {
     camera.aspect = window.innerWidth / window.innerHeight;
@@ -277,9 +293,10 @@ const zoomSpeed = 1;
 
 const tick = () => {
     const elapseTime = clock.getElapsedTime()
-    groupCubes2.rotation.x = 0.35 * elapseTime
-    groupCubesOne.rotation.x = 0.35 * elapseTime
-    groupCubesThree.rotation.x = 0.35 * elapseTime
+    groupCubes2.rotation.y = 0.15 * elapseTime
+    groupCubesOne.rotation.y = 0.15 * elapseTime
+    groupCubesThree.rotation.x = 0.15 * elapseTime
+    track.rotation.y = 0.15 * elapseTime;
     
     if (keyState.S || keyState.X) {
         const phiDelta = phiSpeed * delta * (keyState.S ? -1 : 1);
@@ -538,11 +555,11 @@ function Create1x1Cube(){
 
     
     meshOne = new THREE.Mesh( geometry, material );
+    meshOne.castShadow = true;
+    meshOne.receiveShadow = true;
     groupCubesOne.add(meshOne)
-    groupCubesOne.position.x=-6
-    groupCubesOne.position.z=-4
-    groupCubesOne.rotation.z=Math.PI/4;
-    groupCubesOne.position.y=8
+    groupCubesOne.position.set(-5,-5,1)
+    
 
 }
 
@@ -593,6 +610,22 @@ function Create2x2Cube(){
     lmesh66.position.set(separation,0,separation)
     lmesh77.position.set(separation,separation,separation)
 
+    lmesh00.castShadow = true;
+    lmesh00.receiveShadow = true;
+    lmesh11.castShadow = true;
+    lmesh11.receiveShadow = true;
+    lmesh22.castShadow = true;
+    lmesh22.receiveShadow = true;    
+    lmesh33.castShadow = true;
+    lmesh33.receiveShadow = true;    
+    lmesh44.castShadow = true;
+    lmesh44.receiveShadow = true;    
+    lmesh55.castShadow = true;
+    lmesh55.receiveShadow = true;    
+    lmesh66.castShadow = true;
+    lmesh66.receiveShadow = true;    
+    lmesh77.castShadow = true;
+    lmesh77.receiveShadow = true;    
     
     groupCubes2.add(lmesh00)
     groupCubes2.add(lmesh11)
@@ -602,10 +635,9 @@ function Create2x2Cube(){
     groupCubes2.add(lmesh55)
     groupCubes2.add(lmesh66)
     groupCubes2.add(lmesh77)
-    groupCubes2.position.x=-2
-    groupCubes2.position.z=-4
-    groupCubes2.rotation.z=Math.PI/4;
-    groupCubes2.position.y=8
+    
+    
+    groupCubes2.position.set(-5,-2.5,1)
 
 }
 
@@ -979,5 +1011,4 @@ function handleKeydown2(event) {
     }
     
 }
-
 
